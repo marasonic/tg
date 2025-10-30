@@ -1,5 +1,4 @@
 package cli
-package cli
 
 import (
 	"fmt"
@@ -27,4 +26,6 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(entityCmd)
 	rootCmd.AddCommand(measurementCmd)
+	rootCmd.AddCommand(scenarioCmd)
 }
+

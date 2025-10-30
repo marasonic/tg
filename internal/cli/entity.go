@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"tg/internal/http"
 
 	"github.com/spf13/cobra"
 )
@@ -13,17 +14,6 @@ var entityCmd = &cobra.Command{
 		fmt.Println("Use 'tg entity create' to create a new entity.")
 	},
 }
-
-package cli
-
-import (
-	"fmt"
-	"tg/internal/http"
-
-	"github.com/spf13/cobra"
-)
-
-// ... existing entityCmd definition ...
 
 var createEntityCmd = &cobra.Command{
 	Use:   "create",
@@ -52,4 +42,5 @@ func init() {
 	createEntityCmd.Flags().String("backend-url", "http://localhost:8080", "Backend API URL")
 	createEntityCmd.MarkFlagRequired("name")
 }
+
 

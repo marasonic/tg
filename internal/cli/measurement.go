@@ -2,8 +2,13 @@ package cli
 
 import (
 	"fmt"
+	"io/ioutil"
+	"tg/internal/data"
+	"tg/internal/http"
+	"time"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 var measurementCmd = &cobra.Command{
@@ -13,20 +18,6 @@ var measurementCmd = &cobra.Command{
 		fmt.Println("Use 'tg measurement send' to send measurement data.")
 	},
 }
-
-package cli
-
-import (
-	"fmt"
-	"io/ioutil"
-	"tg/internal/data"
-	"tg/internal/http"
-
-	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
-)
-
-// ... existing measurementCmd definition ...
 
 var sendMeasurementCmd = &cobra.Command{
 	Use:   "send",
@@ -78,9 +69,6 @@ var sendMeasurementCmd = &cobra.Command{
 	},
 }
 
-// ... existing init function ...
-
-
 func init() {
 	measurementCmd.AddCommand(sendMeasurementCmd)
 	sendMeasurementCmd.Flags().String("entity-id", "", "ID of the entity")
@@ -91,3 +79,4 @@ func init() {
 	sendMeasurementCmd.Flags().String("backend-url", "http://localhost:8080", "Backend API URL")
 	sendMeasurementCmd.MarkFlagRequired("entity-id")
 }
+

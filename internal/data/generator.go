@@ -1,4 +1,4 @@
-package datapackage data
+package data
 
 
 import (
