@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"io/ioutil"
+	"tg/internal/auth"
 	"tg/internal/data"
 	"tg/internal/http"
 	"time"

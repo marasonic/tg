@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"tg/internal/auth"
 	"tg/internal/http"
 
 	"github.com/spf13/cobra"
@@ -23,13 +24,19 @@ var createEntityCmd = &cobra.Command{
 		entityType, _ := cmd.Flags().GetString("type")
 		backendURL, _ := cmd.Flags().GetString("backend-url")
 
+		token, err := auth.GetToken()
+		if err != nil {
+			fmt.Printf("Failed to get token: %v\n", err)
+			return
+		}
+
 		payload := map[string]string{
 			"name": name,
 			"type": entityType,
 		}
 
 		url := fmt.Sprintf("%s/entities", backendURL)
-		if err := http.SendPostRequest(url, payload); err != nil {
+		if err := http.SendPostRequest(url, token, payload); err != nil {
 			fmt.Printf("Failed to create entity: %v\n", err)
 		}
 	},

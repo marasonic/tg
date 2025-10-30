@@ -102,7 +102,44 @@ Execute a scenario defined in a YAML file.
 
 ## Configuration
 
+`tg` uses [Viper](https://github.com/spf13/viper) for configuration. This allows you to configure the tool via a configuration file or environment variables.
+
+### Keycloak Authentication
+
+To authenticate with Keycloak, you need to provide client credentials. The tool will automatically fetch a bearer token and add it to every request.
+
+**Configuration options:**
+
+| Setting                 | Environment Variable      | `config.yaml` key         | Default                        |
+| ----------------------- | ------------------------- | ------------------------- | ------------------------------ |
+| Keycloak URL            | `KEYCLOAK_URL`            | `keycloak.url`            | `http://localhost:8080/auth`   |
+| Keycloak Realm          | `KEYCLOAK_REALM`          | `keycloak.realm`          | `master`                       |
+| Keycloak Client ID      | `KEYCLOAK_CLIENT_ID`      | `keycloak.client_id`      |                                |
+| Keycloak Client Secret  | `KEYCLOAK_CLIENT_SECRET`  | `keycloak.client_secret`  |                                |
+
+**Example `config.yaml`:**
+
+Create a `config.yaml` file in the root of the project, in `$HOME/.tg`, or in `/etc/tg/`.
+
+```yaml
+keycloak:
+  url: "https://my-keycloak-instance.com/auth"
+  realm: "my-realm"
+  client_id: "my-cli-client"
+  client_secret: "your-client-secret"
+```
+
+**Keycloak Client Setup:**
+
+1.  In your Keycloak realm, go to **Clients** and create a new client.
+2.  Set the **Client ID** (e.g., `my-cli-client`).
+3.  Set **Client Authentication** to **On**.
+4.  Choose the **Client credentials** grant type.
+5.  Save the client.
+6.  Go to the **Credentials** tab and copy the **Client secret**.
+
 ### Measurement Template
+
 
 You can define the static parts of a measurement's JSON payload in a YAML file. The CLI reads this file and merges it with the dynamically generated data (like `timestamp` and `value`).
 

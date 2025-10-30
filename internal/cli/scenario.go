@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"text/template"
+	"tg/internal/auth"
 	"tg/internal/http"
 
 	"github.com/spf13/cobra"
