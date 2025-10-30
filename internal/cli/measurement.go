@@ -14,6 +14,20 @@ var measurementCmd = &cobra.Command{
 	},
 }
 
+package cli
+
+import (
+	"fmt"
+	"io/ioutil"
+	"tg/internal/data"
+	"tg/internal/http"
+
+	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
+)
+
+// ... existing measurementCmd definition ...
+
 var sendMeasurementCmd = &cobra.Command{
 	Use:   "send",
 	Short: "Send measurement data",
@@ -22,20 +36,50 @@ var sendMeasurementCmd = &cobra.Command{
 		year, _ := cmd.Flags().GetInt("year")
 		value, _ := cmd.Flags().GetFloat64("value")
 		random, _ := cmd.Flags().GetBool("random")
-		config, _ := cmd.Flags().GetString("config")
+		configPath, _ := cmd.Flags().GetString("config")
 		backendURL, _ := cmd.Flags().GetString("backend-url")
 
-		fmt.Printf("Sending measurement data for entity %s in year %d\n", entityID, year)
-		if random {
-			fmt.Println("Using random values.")
-		} else {
-			fmt.Printf("Using fixed value: %f\n", value)
+		var configData map[string]interface{}
+		if configPath != "" {
+			yamlFile, err := ioutil.ReadFile(configPath)
+			if err != nil {
+				fmt.Printf("Error reading config file: %v\n", err)
+				return
+			}
+			err = yaml.Unmarshal(yamlFile, &configData)
+			if err != nil {
+				fmt.Printf("Error unmarshalling config file: %v\n", err)
+				return
+			}
 		}
-		fmt.Printf("Config file: %s\n", config)
-		fmt.Printf("Backend URL: %s\n", backendURL)
-		// Data generation and HTTP request logic will be added here.
+
+		days := data.GetDaysInYear(year)
+		for _, day := range days {
+			var measurementValue float64
+			if random {
+				measurementValue = data.GenerateRandomValue(1, 100)
+			} else {
+				measurementValue = value
+			}
+
+			payload := make(map[string]interface{})
+			for k, v := range configData {
+				payload[k] = v
+			}
+			payload["entity_id"] = entityID
+			payload["timestamp"] = day.Format(time.RFC3339)
+			payload["value"] = measurementValue
+
+			url := fmt.Sprintf("%s/measurements", backendURL)
+			if err := http.SendPostRequest(url, payload); err != nil {
+				fmt.Printf("Failed to send measurement for %s: %v\n", day.Format("2006-01-02"), err)
+			}
+		}
 	},
 }
+
+// ... existing init function ...
+
 
 func init() {
 	measurementCmd.AddCommand(sendMeasurementCmd)
