@@ -97,8 +97,12 @@ var runScenarioCmd = &cobra.Command{
 				}
 			}
 
-
-			if err := http.SendPostRequest(url, body); err != nil {
+			token, err := auth.GetToken()
+			if err != nil {
+				fmt.Printf("Failed to get token: %v\n", err)
+				continue
+			}
+			if err := http.SendPostRequest(url, token, body); err != nil {
 				fmt.Printf("Failed to execute step '%s': %v\n", step.Name, err)
 			}
 		}

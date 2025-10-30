@@ -63,7 +63,12 @@ var sendMeasurementCmd = &cobra.Command{
 			payload["value"] = measurementValue
 
 			url := fmt.Sprintf("%s/measurements", backendURL)
-			if err := http.SendPostRequest(url, payload); err != nil {
+			token, err := auth.GetToken()
+			if err != nil {
+				fmt.Printf("Failed to get token: %v\n", err)
+				continue
+			}
+			if err := http.SendPostRequest(url, token, payload); err != nil {
 				fmt.Printf("Failed to send measurement for %s: %v\n", day.Format("2006-01-02"), err)
 			}
 		}
