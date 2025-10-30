@@ -1,0 +1,23 @@
+name: "Onboard New Sensor and Send Data"
+variables:
+  entityName: "sensor-02"
+  backend: "http://localhost:8080"
+
+steps:
+  - name: "Create a new entity"
+    request:
+      method: "POST"
+      url: "{{.backend}}/entities"
+      body:
+        name: "{{.entityName}}"
+        type: "humidity"
+    register: entity_id # Save the 'id' from the response
+
+  - name: "Send initial measurement"
+    request:
+      method: "POST"
+      url: "{{.backend}}/measurements"
+      body:
+        entity_id: "{{.entity_id}}" # Use the saved id
+        value: 55
+        unit: "percent"
